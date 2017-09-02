@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.devMode" value="true"></constant>
+	<package name="json_package" extends="json-default">
+
+		<!-- 全局结果 -->
+		<global-results>
+			<result name="success" type="json" />
+		</global-results>
+
+		<!-- 查询部门树 -->
+		<action name="findUnitTree"
+			class="cn.xm.exam.web.action.employee.out.UnitTreeAction" method="findUnitTree">
+		</action>
+
+
+	</package>
+</struts>
