@@ -42,7 +42,7 @@
 	 -->
 	 <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 	     <!-- 指定扫描的包名，如果有多个，用半角逗号分隔 -->
-	     <property name="basePackage" value="cn.xm.exam.mapper"></property>
+	     <property name="basePackage" value="danger.mapper"></property>
 	     <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
 	 </bean>
 	 
