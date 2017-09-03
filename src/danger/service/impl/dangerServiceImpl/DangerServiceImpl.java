@@ -1,64 +1,66 @@
 package danger.service.impl.dangerServiceImpl;
 
+import static org.junit.Assert.*;
+
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import danger.bean.dangerManage.Danger;
+import danger.mapper.dangerManage.DangerMapper;
 import danger.service.dangerManage.DangerService;
 import danger.utils.PageBean;
 
 //隐患录入实现类
-public class DangerServiceImpl implements DangerService{
-	//sqlSessionFactory
-	private SqlSessionFactory sqlSessionFactory;
-	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
-		this.sqlSessionFactory = sqlSessionFactory;
+@Service
+public class DangerServiceImpl implements DangerService {
+	@Autowired
+	private DangerMapper dangerMapper;
+	public DangerMapper getDangerMapper() {
+		return dangerMapper;
+	}
+	public void setDangerMapper(DangerMapper dangerMapper) {
+		this.dangerMapper = dangerMapper;
 	}
 
-	
-	//隐患录入
-	//录入的隐患等级如果是A或B级，则需要记录重大安全隐患上报报告
-	//如果是c级或者无，则不需要记录重大安全隐患上报报告。需要在用户填写之后的那个界面处理一下
+
+	// 隐患录入
 	@Override
 	public boolean addDanger(Danger danger) throws Exception {
-		SqlSession sqlSession = sqlSessionFactory.openSession();
-		try {
-			sqlSession.insert("danger.mapper.dangerManage.DangerMapper", danger);
-		} catch (Exception e) {
-			e.printStackTrace();
-			sqlSession.rollback();//如果发生异常，不插入数据
-			return false;
-		}finally{
-			sqlSession.close();
-		}
+		dangerMapper.insert(danger);
 		return true;
 	}
 
-	
 	@Override
 	public boolean deleteDangerById(Integer id) throws Exception {
-		// TODO Auto-generated method stub
+		// 级联删除，这个还没做完
+		dangerMapper.deleteByPrimaryKey(id);
 		return false;
 	}
 
 	@Override
 	public boolean updateDangerById(Danger danger) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		dangerMapper.updateByPrimaryKey(danger);
+		return true;
 	}
 
 	@Override
 	public boolean updateDangerStatus(Integer dangerId, String status) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		//根据隐患编号查询出对应的隐患记录
+		Danger danger = dangerMapper.selectByPrimaryKey(dangerId);
+		//修改隐患状态
+		danger.setDangerstatus(status);
+		//再将修改后的隐患信息保存到数据库
+		dangerMapper.insert(danger);
+		return true;
 	}
 
 	@Override
 	public Danger getDangerById(Integer id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		Danger danger = dangerMapper.selectByPrimaryKey(id);
+		return danger;
 	}
 
 	@Override
@@ -67,6 +69,5 @@ public class DangerServiceImpl implements DangerService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }
