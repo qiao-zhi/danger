@@ -1,7 +1,7 @@
 package danger.utils;
 
 /**
- * 分页工具类
+ * 分页工具
  */
 
 import java.util.ArrayList;
