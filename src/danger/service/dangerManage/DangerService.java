@@ -63,19 +63,5 @@ public interface DangerService {
 	 */
 	public Danger getDangerById(Integer id) throws Exception;
 
-	/**
-	 * 分页组合条件查询
-	 * 
-	 * @param currentPage
-	 *            当前页
-	 * @param currentCount
-	 *            每页大小
-	 * @param condition
-	 *            查询条件
-	 * @return
-	 * @throws Exception
-	 */
-	public PageBean<Danger> findDangerByCondition(int currentPage, int currentCount, Map<String, String> condition)
-			throws Exception;
 
 }

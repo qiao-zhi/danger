@@ -40,11 +40,5 @@ public class DangerServiceImpl implements DangerService {
 		return null;
 	}
 
-	@Override
-	public PageBean<Danger> findDangerByCondition(int currentPage, int currentCount, Map<String, String> condition)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
