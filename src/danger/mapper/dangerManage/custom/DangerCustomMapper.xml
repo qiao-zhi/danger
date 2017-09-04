@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离 注意：使用mapper代理方法开发，namespace有特殊重要的作用 -->
+<mapper namespace="danger.mapper.dangerManage.custom.DangerCustomMapper">
+
+	<!-- 查询分页 -->
+	<sql id="query_page_limit">
+		<if test="currentPage!=null">
+			LIMIT #{currentPage},#{currentCount}
+		</if>
+	</sql>
+	<!-- 查询隐患的条件 -->
+	<sql id="query_danger_where">
+		<if test="checkUnit!=null">
+			and checkUnit=#{checkUnit}
+		</if>
+		<if test="startTime!=null">
+			and findTime > #{startTime}
+		</if>
+		<if test="endTime!=null">
+			and findTime&lt;#{endTime}
+		</if>
+		<if test="dangerGrade!=null">
+			and dangerGrade=#{dangerGrade}
+		</if>
+		<if test="address!=null">
+			and address like '%${address}%'
+		</if>
+		<if test="content!=null">
+			and content like '%${content}%'
+		</if>
+		<if test="type!=null">
+			and type=#{type}
+		</if>
+		<if test="dangerStatus!=null">
+			and dangerStatus=#{dangerStatus}
+		</if>
+	</sql>
+
+	<select id="findDangerByCondition" resultType="danger.bean.dangerManage.Danger"
+		parameterType="hashmap">
+		SELECT * FROM `danger`.`danger`
+		<where>
+			<include refid="query_danger_where"></include>
+			<include refid="query_page_limit"></include>
+		</where>
+	</select>
+
+	<select id="getDangerCountByCondition" resultType="int"
+		parameterType="hashmap">
+		SELECT count(dangerId) FROM `danger`.`danger`
+		<where>
+			<include refid="query_danger_where"></include>
+		</where>
+	</select>
+
+
+
+
+</mapper>
+
+

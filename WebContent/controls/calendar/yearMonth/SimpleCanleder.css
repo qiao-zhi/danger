@@ -1,0 +1,132 @@
+﻿#SimpleCanleder_Year_Month * {
+    margin: 0px;
+    padding: 0px;
+}
+
+#SimpleCanleder_Year_Month .clear {
+    clear: both;
+}
+
+#SimpleCanleder_Year_Month {
+    width: 187px;
+    height:164px;
+    font-size: 14px;
+    line-height: 14px;
+    border: 1px solid lavender;
+    padding: 10px;
+    padding-top: 5px;
+    padding-right: 5px;
+    background-color: white;
+    text-align:center;
+    position: absolute;
+    top:-2px;
+    left:0;
+    z-index:100;
+}
+
+#SimpleCanleder_Year_Month .title {
+    height: 35px;
+}
+
+#SimpleCanleder_Year_Month .title li.middle {
+    width: 65px;
+    position: relative;
+    overflow: visible;
+}
+
+#SimpleCanleder_Year_Month .title li.middle select {
+    margin-top: -3px;
+}
+
+#SimpleCanleder_Year_Month .title li.middle .year_list {
+    width: 100px;
+    position: absolute;
+    left: -20px;
+}
+
+#SimpleCanleder_Year_Month .title li.middle .year_list li {
+    background-color: transparent;
+    text-align: center;
+    width: 45px;
+    height: 20px;
+}
+
+#SimpleCanleder_Year_Month .title li.middle .year_list ul {
+    clear: both;
+}
+
+#SimpleCanleder_Year_Month .title li {
+    list-style: none;
+    width: 40px;
+    height: 30px;
+    overflow: hidden;
+    float: left;
+    display: inline;
+    cursor: pointer;
+}
+
+#SimpleCanleder_Year_Month .body li {
+    background-color: rgb(245, 245, 245);
+    list-style: none;
+    width: 41px;
+    height: 30px;
+    overflow: hidden;
+    float: left;
+    display: inline;
+    cursor: pointer;
+}
+
+#SimpleCanleder_Year_Month .title li.cur, #SimpleCanleder_Year_Month .body li.cur {
+    color: rgb(51, 170, 225)
+}
+
+#SimpleCanleder_Year_Month .title li.over {
+    color: black;
+    border-radius: 3px;
+}
+
+#SimpleCanleder_Year_Month .body li.over {
+    background-color: rgb(255, 128, 0);
+    color: white;
+    border-radius: 3px;
+}
+
+#SimpleCanleder_Year_Month .title li .inner {
+    padding-top: 8px;
+    text-align: center;
+}
+
+#SimpleCanleder_Year_Month .title li .inner select option {
+    font-weight: bold;
+}
+
+#SimpleCanleder_Year_Month .title li .inner select {
+    padding: 0 10px;
+    font-weight: bold;
+
+}
+
+#SimpleCanleder_Year_Month .body li .inner {
+    padding-top: 8px;
+    text-align: center;
+}
+
+#SimpleCanleder_Year_Month .bottom {
+    height: 16px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+#SimpleCanleder_Year_Month .bottom button.clear {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    background-color:white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    position:absolute;
+    right:10px;
+    bottom:4px;
+}
