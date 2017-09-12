@@ -1,6 +1,5 @@
 package danger.service.impl.queryView;
 
-public class WWWW {
+public class SSS {
 
-	int i;
 }
