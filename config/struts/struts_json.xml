@@ -14,7 +14,7 @@
 				<param name="root">result</param>
 			</result>
 		</action>
-
+		
 
 		<!-- 查询统计隐患信息 -->
 		<action name="queryDangerTongji" class="danger.action.queryView.TongjiDangerAction">

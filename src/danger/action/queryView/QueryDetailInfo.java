@@ -34,6 +34,8 @@ import danger.mapper.dangerManage.RechecktableMapper;
 // 控制层，多例模式
 public class QueryDetailInfo extends ActionSupport {
 
+	
+	
 	private String dangerId;
 
 	@Autowired
