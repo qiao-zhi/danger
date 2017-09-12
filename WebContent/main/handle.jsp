@@ -23,6 +23,96 @@
 	src="<%=path%>/controls/selectDropTree/jquery.ztree.excheck.js"></script>
 
 <script src="<%=path%>/js/tree.js"></script>
+<!--索引责任单位-->
+<script type="text/javascript">
+	var setting3 = {
+		view : {
+			selectedMulti : false
+		},
+		check : {
+			enable : true,
+			chkStyle : "radio",
+			radioType : "all"
+		},
+		data : {
+			simpleData : {
+				enable : true,
+				idKey : "departmentId",
+				pIdKey : "upDepartmentId",
+				rootPId : "10",
+			}
+		},
+		callback : {
+			onCheck : onCheck
+		}
+	};
+
+	var code, log3, className = "dark";
+
+	function onCheck(e, treeId, treeNode) {
+		$("#unitId").val(treeNode.name);
+		showLog3(treeNode.name);
+	}
+
+	function showLog3(str) {
+		if (!log3)
+			log3 = $("#log3");
+		/*清空内部的东西*/
+		if ($("#log3 > li").length > 0) {
+			$("#log3").children("li").remove();
+		}
+		log3.append("<li class='" + className + "'>" + str + "</li>");
+
+		/*判断是否插入进入，若插入进入，关闭树框*/
+		if ($("#log3 > li").length > 0) {
+			$("#treeDemo3").hide();
+		}
+	}
+
+	function checkNode(e) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo3"), type = e.data.type, nodes = zTree
+				.getSelectedNodes();
+		if (type.indexOf("All") < 0 && nodes.length == 0) {
+			alert("请先选择一个节点");
+		}
+
+		if (type == "checkAllTrue") {
+			zTree.checkAllNodes(true);
+		} else if (type == "checkAllFalse") {
+			zTree.checkAllNodes(false);
+		} else {
+			var callbackFlag = $("#callbackTrigger").attr("checked");
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (type == "checkTrue") {
+					zTree.checkNode(nodes[i], true, null, callbackFlag);
+				} else if (type == "checkFalse") {
+					zTree.checkNode(nodes[i], false, null, callbackFlag);
+				} else if (type == "checkTruePS") {
+					zTree.checkNode(nodes[i], true, true, callbackFlag);
+				} else if (type == "checkFalsePS") {
+					zTree.checkNode(nodes[i], false, true, callbackFlag);
+				}
+			}
+		}
+	}
+
+	$(document).ready(function() {
+		searchUnitTree();
+    	var zNodes = eval("("+$("#hidden_tree").val()+")"); 
+		$.fn.zTree.init($("#treeDemo3"), setting3, zNodes);
+		$("#checkTrue").bind("click", {
+			type : "checkTrue"
+		}, checkNode);
+		$("#checkFalse").bind("click", {
+			type : "checkFalse"
+		}, checkNode);
+
+		$("#treeDemo3").hide();
+		$("#log3").click(function() {
+			$('#treeDemo3').toggle();
+		})
+	});
+</script>
 
 <link rel="stylesheet" href="<%=path%>/css/public/public_style.css" />
 
@@ -70,11 +160,47 @@
 <!--验证-->
 <script src="<%=path%>/controls/validate/jquery.validate.js"></script>
 <script src="<%=path%>/controls/validate/messages_zh.js"></script>
+<script>
+	$().ready(function() {
+		$("#handleform").validate({
+			rules : {
+				hasSafeMeasure : "required",//发现日期
+				disposeMeasure : {
+					required : function() {
+						if ($("#noqualified").prop("checked")) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				},
+				disposeDate : "required",
+				disposePerson : "required"
+			},
+			messages : {
+				hasSafeMeasure : {
+					required : "不能为空"
+				},
+				disposeMeasure : {
+					required : "不能为空"
+				},
+				disposeDate : {
+					required : "不能为空"
+				},
+				disposePerson : {
+					required : "不能为空"
+				}
+			}
+		});
+	});
+</script>
+
 <style>
 .error {
 	color: red;
 }
 </style>
+
 
 </head>
 
@@ -239,6 +365,16 @@
 												<ul id="treeDemo3" class="ztree"></ul>
 											</div>
 										</div>
+										<!-- 从unitId 的input 隐藏域拿过来的值，放ul到文本框上。并且，把下边的树节点选中。 -->
+										<script>
+											var hiV = $("#unitId").val();
+											if ($("#log3 > li").length > 0) {//先清空
+												$("#log3").children("li").remove();
+											}
+											//插入值
+											$("#log3").append("<li class='" + className + "'>" + hiV + "</li>");
+											
+										</script>
 
 										<div class="col-md-3 el_qlmQuery">
 											<div class="input-group" role="toolbar">
@@ -428,12 +564,97 @@
 														</div>
 													</form>
 												</div>
+												<script type="text/javascript">
+                                    	function saveButton(){
+                                    		//alert("开始执行saveButton()");
+                                			//模态框中处理措施
+                                			//alert($("#mtchulicuoshi").val());
+                                			//alert($("#mtchuliren").val());
+                                			
+                                			
+                                			
+                                			//模态框中处理人
+                                    		if(($("#mtchulicuoshi").val()!="") && ($("#mtchuliren").val()!="")){
+                                    			//alert("进入ajax");
+                            					$.ajax({
+                                    				url : '${pageContext.request.contextPath }/danger/spot_add.action',
+                                    				data : $("#handleform").serialize(),
+                                    				type : 'POST',
+                                    				dataType : 'json',
+                                    				async:true,
+                                    				success : function(data) {
+                                    					//alert("进入success");
+                                    					//弹出是否录入成功
+                                    					alert(data.result);
+                                    					
+                                    				},error:function(){
+                                    					alert("请求失败！");
+                                    				}
+                                    				
+                                    			});
+                            					
+                            				}
+                                    		if(($("#mtchulicuoshi").val()=="") && ($("#mtchuliren").val()=="")){
+                            					alert("处理措施内容 和 处理人不能为空");
+                            					return;
+                            				}
+                                    		
+                                    		if(($("#mtchulicuoshi").val()=="") || ($("#mtchuliren").val()=="")){
+	                                    		if($("#mtchulicuoshi").val()==""){
+	                            					alert("处理措施内容不能为空");
+	                            				}
+	                                    		if($("#mtchuliren").val()==""){
+	                            					alert("处理人不能为空");
+	                            					
+	                            				}
+												return;                            					
+                            				}
+                                    		//最后关闭模态框(也就是将模态框隐藏)
+                                    		$("#el_setFour").modal('hide');
+                                    	}
+                                    
+                                    </script>
 
 											</div>
 											<!-- /.modal-content -->
 										</div>
 										<!-- /.modal -->
 									</div>
+									<script>
+		                    function el_setFour(obj,dangerid) {
+		                    	//初始化
+		                    	//mtchulicuoshi处理措施
+		                    	$("#mtchulicuoshi").val('');
+		                    	//mtchuliren 处理人
+		                    	$("#mtchuliren").val('');
+		                    	
+		                    	$tds = $(obj).parents('tr').children('td');
+		                    	//alert($tds.eq(0).html() + $tds.eq(1).html());
+		                    	//$("#checkDate").html($tds.eq(1).html());
+		                    	//alert($("#checkDate").text());
+		                    	//$("#checkdate").text("");
+		                    	$("#checkdate").text($tds.eq(1).html());
+		                    	$("#xg_address").text($tds.eq(8).html());
+		                    	$("#checkunit").text($tds.eq(2).html());
+		                    	$("#dangercontent").text($tds.eq(4).html());
+		                    	$("#unit").text($tds.eq(7).html());
+		                    	$("#checkperson").text($tds.eq(3).html());
+		                    	var findclass = $($tds).find(".findclass").val();
+		                    	//班次，状态，级别
+		                    	$("#dangerstatus1").text($tds.eq(9).html());
+		                    	$("#classtype1").text(findclass);
+		                    	$("#dangergrade1").text($tds.eq(5).html());
+		                    	
+		                    	
+		                    	//alert($(obj).siblings("input").val()+"qw");
+		                    	//获取隐患id的值
+		                    	$("#indangerid").val(dangerid);
+		                    	//alert($("#indangerid").val());
+		                    	
+		                    	
+		                        $('#el_setFour').modal();
+		                    }
+		                </script>
 
 									<!-- 模态框 详细信息-->
 									<div class="modal fade" id="allInfo" tabindex="-1"
@@ -516,7 +737,54 @@
 										</div>
 										<!-- /.modal -->
 									</div>
-
+									<script>
+		                    function allInfo(obj) {
+		                    	$tds = $(obj).parents('tr').children('td');
+		                    	//alert($tds.eq(0).html() + $tds.eq(1).html());
+		                    	//$("#checkDate").html($tds.eq(1).html());
+		                    	//alert($("#checkDate").text());
+		                    	//$("#checkDate").text("");
+		                    	$("#xqcheckdate").text($tds.eq(1).html());
+		                    	$("#xqcheckperson").text($tds.eq(3).html());
+		                    	$("#xqcheckunit").text($tds.eq(2).html());
+		                    	//$("#xqcheckdate").text($tds.eq().html());//
+		                    	//$("#xqaddress").text($tds.eq(1).html());//
+		                    	$("#xqdangertype").text($tds.eq(6).html());
+		                    	$("#xqdangergrade").text($tds.eq(5).html());
+		                    	$("#xqdangercontent").text($tds.eq(4).html());
+		                    	$("#xqaddress").text($tds.eq(8).html());
+		                    	$("#xqunit").text($tds.eq(7).html());
+		                    	
+		                    	var danid = $(obj).siblings("input").val();
+		                    	//将在表格中没有的数据查询出来，并添加到详情模态框中的对应位置上显示
+		                    	$.ajax({
+		                    		url:'${pageContext.request.contextPath}/spot_findByDangerId.action?dangerid='+danid,
+		                    		type:'POST',
+		                    		data:'',
+		                    		dataType:'json',
+		                    		async:false,
+		                    		success:function(data){
+		                    			var json = eval(data);
+		                    			/* data.hassafemeasure
+		                    			json.put("hassafemeasure", spotd.getHassafemeasure());
+		                    			json.put("disposemeasure", spotd.getDisposemeasure());
+		                    			json.put("disposedate", spotd.getDisposemeasure());
+		                    			json.put("disposeperson", spotd.getDisposeperson()); */
+		                    			//安全技术措施
+		                    			//alert(json.disposeperson);
+		                    			$("#yhtecmeasure").text(json.hassafemeasure);
+		                    			$("#yhdealmeasure").text(json.disposemeasure);
+		                    			$("#yhdealperson").text(json.disposeperson);
+		                    			$("#yhdealdate").text(json.disposedate);
+		                    			//关闭模态框
+				                        $('#allInfo').modal();
+		                    		},error:function(){
+		                    			alert("没有您想要的数据！");
+		                    		}
+		                    		
+		                    	});
+		                    }
+		                </script>
 
 									<!-- 模态框 导出-->
 									<div class="modal fade" id="el_Export" tabindex="-1"
@@ -550,6 +818,27 @@
 
 									<!--分页-->
 									<div id="paginationIDU"></div>
+									<script>
+										$('#paginationIDU').pagination(
+												{
+													//			组件属性
+													"total" :${result.pageBean.totalCount},//数字 当分页建立时设置记录的总数量 1
+													"pageSize" : 8,//数字 每一页显示的数量 10
+													"pageNumber" : ${result.pageBean.currentPage},//数字 当分页建立时，显示的页数 1
+													"pageList" : [ 8 ],//数组 用户可以修改每一页的大小，
+													//功能
+													"layout" : [ 'list', 'sep',
+															'first', 'prev',
+															'manual', 'next',
+															'last', 'links' ],
+													"onSelectPage" : function(
+															pageNumber, b) {
+														$("#currentPage").val(pageNumber);
+														$("#currentCount").val(b);
+														$("#queryForm").submit();
+													}
+												});
+									</script>
 
 								</div>
 							</div>
@@ -568,7 +857,4 @@
 	<!--放脚-->
 	<jsp:include page="../public/footer.jsp"></jsp:include>
 </body>
-
-<script src="<%=path%>/js/hd/handle.js"></script>
-
 </html>
