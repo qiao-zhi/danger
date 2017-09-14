@@ -48,5 +48,14 @@ public interface SpotDisposeService {
 	 * @throws Exception
 	 */
 	public Map<String, Object> getSpotDisposeByDangerId(Integer dangerId) throws Exception;
-
+	
+	/**
+	 * 
+	 * @param dangerId
+	 * @return
+	 * @throws Exception
+	 */
+	public Spotdispose selectByDangerId(Integer dangerId)throws Exception;
+	
+	public boolean delSpotDisposeBydangerId(Integer dangerid) throws Exception;
 }
