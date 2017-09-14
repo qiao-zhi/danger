@@ -458,17 +458,263 @@
 															<a href="javascript:void(0)"
 																onClick="el_setFour(this,${danger.dangerid})">现场处理</a>
 														</c:if> <!-- 隐藏域 用于存放隐患id --> <input type="hidden" id="dangerId"
-														value="${danger.dangerid }" /> <c:if
+														value="${danger.dangerid }" /> 
+														<c:if
 															test="${danger.dangerstatus eq '已现场处理' }">
 															<a href="javascript:void(0)" onClick="allInfo(this)">详情</a>
-														</c:if></td>
+														<!-- 删除现场处理 -->
+														<a href="javascript:void(0)" onClick="disposeDelete(${danger.dangerid})">删除现场处理</a>
+														<!-- 修改现场处理  -->
+													 <a href="javascript:void(0)" onClick="el_setFive(this,${danger.dangerid})">修改现场处理</a> 
+														</c:if>
+													</td>
 												</tr>
 
 											</c:forEach>
 
 										</tbody>
 									</table>
+								
+								<!-- 删除现场处理 start -->
+									<script type="text/javascript">
+										//根据隐患id删除现场处理信息
+										function disposeDelete(dangerid){
+												alert("开始进入删除方法")
+                        					$.ajax({
+                                				url : '${pageContext.request.contextPath }/danger/spot_delDisposeByDangerId.action?dangerid='+dangerid,
+                                				data : '',
+                                				type : 'POST',
+                                				dataType : 'json',
+                                				async:true,
+                                				success : function(data) {
+                                					//alert("进入success");
+                                					//弹出是否录入成功
+                                					alert(data.result);
+                                					window.location.reload();
+                                				},error:function(){
+                                					alert("请求失败！");
+                                				}
+                                				
+                                			});
+                        					}
+									
+									</script>								
+								
+				<!------------ 删除现场处理  end ---------------------------------->
+				
+				<!-- --------修改现场处理 start-------- -->				
+				<!------------------------- 模态框  修改现场处理 start ------------------------------------------>
+								<!-- 	模态框  修改现场处理 -->
+									<div class="modal fade" id="el_setFive" tabindex="-1"
+										role="dialog" aria-labelledby="myModalLabel"
+										aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal"
+														aria-hidden="true">&times;</button>
+													关闭符号
+													标题
+													<h3 class="modal-title">安全隐患问题现场处理记录</h3>
+												</div>
 
+												<div class="modal-body">
+													<h3>基本信息:</h3>
+													<div class="el_parperInfo">
+														<table>
+															<tr>
+																<td>检查日期：</td>
+																<td id="checkdate1">2017-12-10</td>
+																<td >检查人：</td>
+																<td id="checkperson1">张明</td>
+															</tr>
+															<tr>
+																<td>检查单位：</td>
+																<td id="checkunit1">机电科</td>
+																<td>地点：</td>
+																<td id="addressq1">1# 工程部</td>
+															</tr>
+															<tr>
+																<td>隐患内容：</td>
+																<td colspan="3" id="dangercontent1">道超过扩散通风距离（实测长约××m、瓦斯浓度×%),未设置栅栏,揭示警标<</td>
+															</tr>
+															<tr>
+																<td>责任单位：</td>
+																<td id="unit1">安装二队</td>
+																<td>责任人：</td>
+																<td id="manager1">安民</td>
+															</tr>
+														</table>
+													</div>
+													<!-- 表单  要提交到action层的数据 根据隐患id修改现场处理信息 -->
+													<form id="handleformUpdate">
+														<input type="hidden" id="indangerid1"
+															name="spotdispose.dangerid" />
+														<div class="input-group el_modellist" role="toolbar">
+															<span class="el_spans">安全技术措施：</span>
+															 <label
+																class="el_radioBox el_radioBox2">
+																 <input type="radio" name="spotdispose.hassafemeasure"
+																id="noqualified1" checked value="1"> 有
+															</label>
+															 <label class="el_radioBox el_radioBox2"> 
+															 	<input id="noqualified2" type="radio" name="spotdispose.hassafemeasure" value="0">无
+															</label>
+														</div>
+
+														<div class="input-group el_modellist" role="toolbar">
+															<span class="el_spans">处理措施：</span>
+															<textarea id="mtchulicuoshi1" class="form-control texta"
+																rows="10" name="spotdispose.disposemeasure"></textarea>
+														</div>
+
+														<div class="input-group el_modellist" role="toolbar">
+															<span class="el_spans">处理时间：</span> <input type="text"
+																name="spotdispose.disposedate" id="reservationtime1"
+																class="form-control el_modelinput span4"
+																value="2017-08-10 1:00 AM" />
+														</div>
+														<script type="text/javascript">
+						                        $(document).ready(function () {
+						                            $('#reservationtime1').daterangepicker({
+						                                singleDatePicker: true,//设置成单日历
+						                                timePicker: true,
+						                                timePickerIncrement: 1,
+						                                format: 'YYYY-MM-DD h:mm A'
+						                            }, function (start, end, label) {
+						                                console.log(start.toISOString(), end.toISOString(), label);
+						                            });
+						                            var mydate = new Date();
+                                                    var year = mydate.getFullYear();
+                                                    var month = mydate.getMonth() + 1;
+                                                    if (month < 9) {
+                                                        month = "0" + month;
+                                                    }
+                                                    var day = mydate.getDate();
+                                                    if (day < 9) {
+                                                        day = "0" + day;
+                                                    }
+                                                    var hour = mydate.getHours();
+                                                    if (hour < 9) {
+                                                        hour = "0" + hour;
+                                                    }
+                                                    var minute = mydate.getMinutes();
+                                                    if (minute < 9) {
+                                                        minute = "0" + minute;
+                                                    }
+                                                    $("#reservationtime1").val(year + "-" + month + "-" + day+" " + hour + ":" + minute);
+						                        });
+						                    </script>
+
+														<div class="input-group el_modellist" role="toolbar">
+															<span class="el_spans">处&nbsp;&nbsp;理&nbsp;人：</span> <input
+																id="mtchuliren1" type="text"
+																class="form-control el_modelinput"
+																name="spotdispose.disposeperson" />
+														</div>
+
+														<div class="modal-footer">
+															<!-- <button  type="submit" class="btn btn-primary">保存</button> -->
+															<button id="submitButton1" onclick="saveButton1()"
+																type="button" class="btn btn-primary">保存</button>
+															<button type="button" class="btn btn-default"
+																data-dismiss="modal">关闭</button>
+														</div>
+													</form>
+												</div>
+												<script type="text/javascript">
+                                    	function saveButton1(){
+                                    		//alert("开始执行saveButton()");
+                                			
+                                			//模态框中处理人
+                                    		if(($("#mtchulicuoshi1").val()!="") && ($("#mtchuliren1").val()!="")){
+                                    			alert("进入ajax");
+                                    			
+                            					$.ajax({
+                                    				url : '${pageContext.request.contextPath }/spot_updateBydangerid.action',
+                                    				data : $("#handleformUpdate").serialize(),
+                                    				type : 'POST',
+                                    				dataType : 'json',
+                                    				async:true,
+                                    				success : function(data) {
+                                    					alert("进入success");
+                                    					//弹出是否录入成功
+                                    					alert(data.result);
+                                    					window.location.reload();
+                                    				},error:function(){
+                                    					alert("请求失败！");
+                                    				}
+                                    				
+                                    			});
+                            					
+                            				}
+                                    		if(($("#mtchulicuoshi1").val()=="") && ($("#mtchuliren1").val()=="")){
+                            					alert("处理措施内容 和 处理人不能为空");
+                            					return;
+                            				}
+                                    		
+                                    		if(($("#mtchulicuoshi1").val()=="") || ($("#mtchuliren1").val()=="")){
+	                                    		if($("#mtchulicuoshi1").val()==""){
+	                            					alert("处理措施内容不能为空");
+	                            				}
+	                                    		if($("#mtchuliren1").val()==""){
+	                            					alert("处理人不能为空");
+	                            					
+	                            				}
+												return;                            					
+                            				}
+                                    		//最后关闭模态框(也就是将模态框隐藏)
+                                    		$("#el_setFive").modal('hide');
+                                    	}
+                                    
+                                    </script>
+
+											</div>
+											/.modal-content
+										</div>
+										/.modal
+									</div>
+									<script>
+		                    function el_setFive(obj,dangerid) {
+		                    	//初始化
+		                    	//mtchulicuoshi处理措施
+		                    	$("#mtchulicuoshi1").val('');
+		                    	//mtchuliren 处理人
+		                    	$("#mtchuliren1").val('');
+		                    	
+		                    	$tds = $(obj).parents('tr').children('td');
+		                    	//===
+		                    	alert($tds.eq(1).html())
+		                    	alert($tds.eq(2).html())
+		                    	alert($tds.eq(8).html())
+		                    	alert($tds.eq(4).html())
+		                    	alert($tds.eq(7).html())
+		                    	alert($tds.eq(3).html())
+		                    	alert($tds.eq(1).html())
+		                    	//====
+		                    	$("#checkdate1").text($tds.eq(1).html());//检查日期
+		                    	$("#checkunit1").text($tds.eq(2).html());//检查单位
+		                    	$("#manager1").text($tds.eq(8).html());//责任人
+		                    	$("#dangercontent1").text($tds.eq(4).html());//隐患内容
+		                    	$("#unit1").text($tds.eq(7).html());//责任单位
+		                    	$("#checkperson1").text($tds.eq(3).html());//检查人
+								//$("#addressq").text($tds.eq(3).html());//地点
+
+		                    	//获取隐患id的值
+		                    	$("#indangerid1").val(dangerid);//为那个隐藏域(隐患id赋值)
+		                    	//alert($("#indangerid").val());
+		                    	
+		                    	
+		                        $('#el_setFive').modal();
+		                    }
+		                </script>								
+ 									
+					<!---------------------- 模态框  修改现场处理  end ---------------------------------------------->
+									
+								
+								
+				<!-- 修改现场处理  end ------------------ -->
+								
 									<!-- 模态框 现场处理-->
 									<div class="modal fade" id="el_setFour" tabindex="-1"
 										role="dialog" aria-labelledby="myModalLabel"
@@ -657,6 +903,7 @@
 		                </script>
 
 									<!-- 模态框 详细信息-->
+									<!-- 模态框 详细信息-->
 									<div class="modal fade" id="allInfo" tabindex="-1"
 										role="dialog" aria-labelledby="myModalLabel"
 										aria-hidden="true">
@@ -667,62 +914,61 @@
 														aria-hidden="true">&times;</button>
 													<!--关闭符号-->
 													<!--标题-->
-													<h3 class="modal-title">安全隐患-现场处理详情</h3>
+													<h3 class="modal-title">安全隐患详情</h3>
 												</div>
 												<form>
 													<div class="modal-body">
 														<div class="el_parperInfo">
-															&nbsp;&nbsp;安全隐患基本信息
 															<table>
 																<tr>
 																	<td>检查日期：</td>
-																	<td id="xqcheckdate"></td>
+																	<td id="xqcheckdate">2017-12-10</td>
 																	<td>检查人：</td>
-																	<td id="xqcheckperson"></td>
+																	<td id="xqcheckperson">张明</td>
 																</tr>
 																<tr>
 																	<td>检查单位：</td>
-																	<td id="xqcheckunit"></td>
+																	<td id="xqcheckunit">机电科</td>
 																	<td>地点：</td>
-																	<td id="xqaddress"></td>
+																	<td id="xqaddress">1# 工程部</td>
 																</tr>
 																<tr>
 																	<td>隐患类型：</td>
-																	<td id="xqdangertype"></td>
+																	<td id="xqdangertype">机电</td>
 																	<td>隐患级别：</td>
-																	<td id="xqdangergrade"></td>
+																	<td id="xqdangergrade">C</td>
 																</tr>
 																<tr>
 																	<td>隐患内容：</td>
-																	<td id="xqdangercontent" colspan="3"></td>
+																	<td id="xqdangercontent" colspan="3">道超过扩散通风距离（实测长约××m、瓦斯浓度×%),未设置栅栏,揭示警标<</td>
 																</tr>
 																<tr>
 																	<td>责任单位：</td>
-																	<td id="xqunit"></td>
-																	<!-- <td>责任负责人</td>
-																	<td id="xqmanger"></td> -->
+																	<td id="xqunit">安装二队</td>
+																	<td>责任负责人</td>
+																	<td id="xqmanger">王建</td>
 																</tr>
+
 															</table>
 
-															<br /> &nbsp;&nbsp;现场处理信息
+															<br />
 															<table>
 																<tr>
-																	<td>处理时间：</td>
-																	<td id="yhdealdate"></td>
 																	<td>安全技术措施：</td>
-																	<td id="yhtecmeasure"></td>
-																	<!-- <td>复查结果</td>
-                                                        <td>合格</td> -->
-																</tr>
-																<tr>
-																	<td>处理人</td>
-																	<td id="yhdealperson"></td>
+																	<td id="yhtecmeasure" colspan="3">道超过扩散通风距离（实测长约××m、瓦斯浓度×%),未设置栅栏,揭示警标<</td>
 																</tr>
 																<tr>
 																	<td>处理措施：</td>
-																	<td id="yhdealmeasure"></td>
+																	<td id="yhdealmeasure">2017-12-1</td>
+																	<td>处理人</td>
+																	<td id="yhdealperson">王建</td>
 																</tr>
-
+																<tr>
+																	<td>处理时间：</td>
+																	<td id="yhdealdate">分特</td>
+																	<!-- <td>复查结果</td>
+                                                        <td>合格</td> -->
+																</tr>
 															</table>
 														</div>
 													</div>
@@ -752,8 +998,8 @@
 		                    	$("#xqdangertype").text($tds.eq(6).html());
 		                    	$("#xqdangergrade").text($tds.eq(5).html());
 		                    	$("#xqdangercontent").text($tds.eq(4).html());
-		                    	$("#xqaddress").text($tds.eq(8).html());
 		                    	$("#xqunit").text($tds.eq(7).html());
+		                    	$("#xqmanger").text($tds.eq(8).html());
 		                    	
 		                    	var danid = $(obj).siblings("input").val();
 		                    	//将在表格中没有的数据查询出来，并添加到详情模态框中的对应位置上显示
@@ -822,7 +1068,7 @@
 										$('#paginationIDU').pagination(
 												{
 													//			组件属性
-													"total" :${result.pageBean.totalCount},//数字 当分页建立时设置记录的总数量 1
+													"total" : ${result.pageBean.totalCount},//数字 当分页建立时设置记录的总数量 1
 													"pageSize" : 8,//数字 每一页显示的数量 10
 													"pageNumber" : ${result.pageBean.currentPage},//数字 当分页建立时，显示的页数 1
 													"pageList" : [ 8 ],//数组 用户可以修改每一页的大小，

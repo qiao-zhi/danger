@@ -56,5 +56,6 @@ public interface SpotDisposeService {
 	 * @throws Exception
 	 */
 	public Spotdispose selectByDangerId(Integer dangerId)throws Exception;
-
+	
+	public boolean delSpotDisposeBydangerId(Integer dangerid) throws Exception;
 }

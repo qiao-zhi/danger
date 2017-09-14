@@ -1,11 +1,11 @@
 package danger.action.dangerManager;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
@@ -15,9 +15,12 @@ import org.springframework.stereotype.Controller;
 import com.opensymphony.xwork2.ActionSupport;
 
 import danger.bean.dangerManage.Danger;
+import danger.bean.sys.Dictionary;
 import danger.mapper.dangerManage.DangerMapper;
 import danger.mapper.dangerManage.custom.DangerCustomMapper;
 import danger.service.dangerManage.DangerService;
+import danger.service.sys.DictionaryService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
@@ -25,13 +28,14 @@ import net.sf.json.JSONObject;
 // 控制层，多例模式
 public class DangerAction extends ActionSupport {
 
-	
 	@Resource
 	private DangerCustomMapper dangerCustomMapper;
 	@Resource
 	private DangerService dangerService;
 	@Resource
 	DangerMapper dangerMapper;
+	@Resource
+	private DictionaryService dictionaryService;
 	// 班次
 	private List<Danger> banciList;
 
@@ -143,50 +147,146 @@ public class DangerAction extends ActionSupport {
 		return null;// "updateByDanger";
 	}
 
+	// ========初始化下拉框 start
 	// 初始化班次
-	public String initBanciData() throws IOException {
-		// 从数据库中查询班次、检查单位、隐患类型、责任单位
-		banciList = dangerCustomMapper.findAllDangerclassType();
-		return SUCCESS;
+	public String initBanciData() throws Exception {
+		List<String> banciList = new ArrayList<String>();
+
+		// 根据上级字典编号查询下级字典信息
+		List<Dictionary> banciList2 = dictionaryService.getDictionaryByUpDicId("500");
+		for (Dictionary dic : banciList2) {
+			banciList.add(dic.getName());// 名称
+		}
+
+		JSONObject json = new JSONObject();
+		json.put("banci", banciList);
+
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write(json.toString());
+		return null;
 	}
 
 	// 初始化检查单位
-	public String initcheckUnitData() throws IOException {
-		// 从数据库中查询班次、检查单位、隐患类型、责任单位
-		jianChaList = dangerCustomMapper.findAllDangercheckUnit();
-		System.out.println(jianChaList.get(0).getCheckunit());
-		return SUCCESS;
+	public String initcheckUnitData() throws IOException, SQLException {
+		// 把查询出来的数据封装成List集合就行了
+		List<String> banciList = new ArrayList<String>();
+
+		// 根据上级字典编号查询下级字典信息
+		List<Dictionary> jcdwList2 = dictionaryService.getDictionaryByUpDicId("400");
+		for (Dictionary dic : jcdwList2) {
+			banciList.add(dic.getName());// 名称
+		}
+
+		JSONObject json = new JSONObject();
+		json.put("banci", banciList);
+
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write(json.toString());
+		return null;
 	}
 
 	// 初始化隐患类型
-	public String initDangerType() throws IOException {
-		// 查询出来的数据是不对的
-		dangeTpList = dangerCustomMapper.findAllDangercheckUnit();
-		System.out.println(dangeTpList);
-		return SUCCESS;
+	public String initDangerType() throws Exception {
+		// 把查询出来的数据封装成List集合就行了
+		// 把查询出来的数据封装成List集合就行了
+		List<String> banciList = new ArrayList<String>();
+
+		// 根据上级字典编号查询下级字典信息
+		List<Dictionary> yhlxList2 = dictionaryService.getDictionaryByUpDicId("100");
+		for (Dictionary dic : yhlxList2) {
+			banciList.add(dic.getName());// 名称
+		}
+
+		JSONObject json = new JSONObject();
+		json.put("banci", banciList);
+
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write(json.toString());
+		return null;
+	}
+
+	// 初始化隐患级别
+	public String initDangerGrade() throws IOException, SQLException {
+		// 把查询出来的数据封装成List集合就行了
+		// 把查询出来的数据封装成List集合就行了
+		List<String> banciList = new ArrayList<String>();
+
+		// 根据上级字典编号查询下级字典信息
+		List<Dictionary> yhjbList2 = dictionaryService.getDictionaryByUpDicId("300");
+		for (Dictionary dic : yhjbList2) {
+			banciList.add(dic.getName());// 名称
+		}
+
+		JSONObject json = new JSONObject();
+		json.put("banci", banciList);
+
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write(json.toString());
+		return null;
 	}
 
 	// 初始化责任单位
-	public String initUnitData() throws IOException {
-		// 从数据库中查询班次、检查单位、隐患类型、责任单位
-		zeRenList = dangerCustomMapper.findAllDangerunit();
-		System.out.println(zeRenList);
-		/*
-		 * if(banciList!=null){ JSONArray formObject =
-		 * JSONArray.fromObject(banciList); String str = formObject.toString();
-		 * System.out.println(str);
-		 * ServletActionContext.getResponse().getWriter().write(str); }
+	/*
+	 * public String initUnitData() throws IOException {
+	 *//**
+		 * [ {id : 1,pId : 0,name : "炖烂安检处",open : true}, {id : 11,pId : 1,name
+		 * : "无人检查组",open : true}, {id : 12,pId : 1,name : "班长",open : true } ];
 		 */
-		return SUCCESS;
-	}
 
+	/*
+	 * int id =1; int pId = 0; String name = "炖烂安监处"; boolean open = true;
+	 * 
+	 * //封装JSON数组 JSONArray jsonArray = new JSONArray();
+	 * 
+	 *//**
+		 * var zNodes2 = [ {id : 1,pId : 0,name : "随意勾选 1",open : true}, {id :
+		 * 11,pId : 1,name : "无 radio 1-1",nocheck : true}, {id : 12,pId :
+		 * 1,name : "随意勾选 1-2",open : true }, {id : 121,pId : 12,name :
+		 * "随意勾选 1-2-1" }, {id : 122,pId : 12, name : "随意勾选 1-2-2"}, {id :
+		 * 123,pId : 12, name : "无 radio 1-2-3", nocheck : true}, {id : 13,pId :
+		 * 1,name : "随意勾选 1-3" }, {id : 2,pId : 0,name : "禁止勾选 2",open : true},
+		 * {id : 21,pId : 2,name : "禁止勾选 2-1",doCheck : false}, {id : 22,pId :
+		 * 2,name : "禁止勾选 2-2",open : true }, {id : 221,pId : 22,name :
+		 * "禁止勾选 2-2-1" }, {id : 222,pId : 22,name : "禁止勾选 2-2-2",doCheck :
+		 * false }, {id : 223,pId : 22, name : "禁止勾选 2-2-3",doCheck : false},
+		 * {id : 23,pId : 2,name : "禁止勾选 2-3",doCheck : false } ];
+		 *//*
+		 * JSONObject json1 = new JSONObject();
+		 * 
+		 * json1.put("id", 1); json1.put("pId", 0); json1.put("name", "炖烂安监处");
+		 * json1.put("open", true); jsonArray.add(json1);
+		 * 
+		 * 
+		 * //JSON对象 for(int i=1;i<=4;i++){ JSONObject json = new JSONObject();
+		 * 
+		 * json.put("id", i+1); json.put("pId", i); json.put("name", "炖烂安监处");
+		 * json.put("open", true);
+		 * 
+		 * // 将json对象添加到json数组中 jsonArray.add(json);
+		 * 
+		 * 
+		 * }
+		 * 
+		 * 
+		 * System.out.println(jsonArray.toString());
+		 * 
+		 * HttpServletResponse response = ServletActionContext.getResponse();
+		 * response.setContentType("text/html;charset=utf-8");
+		 * response.getWriter().write(jsonArray.toString()); return null; }
+		 */
+	// ========================初始化下拉框 end
+
+	// =====================
 	// 将所有级别=无且状态="未四定的隐患信息查询出来 页面初始化用的
-	public String findDangerByJBZT() throws IOException {
-		// 这个查询出来的数据是错误的
-		jbztList = dangerCustomMapper.findAllDangerclassType();
-		System.out.println(jbztList);
-		return SUCCESS;
-	}
+	/*
+	 * public String findDangerByJBZT() throws IOException { // 这个查询出来的数据是错误的
+	 * jbztList = dangerCustomMapper.findAllDangerclassType();
+	 * System.out.println(jbztList); return SUCCESS; }
+	 */
 
 	public String deletebydangerid() throws Exception {
 		System.out.println("进入Action删除方法");

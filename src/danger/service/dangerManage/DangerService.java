@@ -1,5 +1,6 @@
 package danger.service.dangerManage;
 
+import java.util.List;
 import java.util.Map;
 
 import danger.bean.dangerManage.Danger;
@@ -63,5 +64,11 @@ public interface DangerService {
 	 */
 	public Danger getDangerById(Integer id) throws Exception;
 
-
+	public List findAllDangerclassType() throws Exception;
+	
+	public List findAllDangercheckUnit() throws Exception;
+	
+	public List findAllDangertype() throws Exception;
+	
+	public List findAllDangerunit() throws Exception;
 }

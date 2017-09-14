@@ -17,14 +17,8 @@ import danger.mapper.dangerHandle.custom.SpotdisposeCustomMapper;
 import danger.mapper.dangerManage.DangerMapper;
 import danger.service.dangerHandle.SpotDisposeService;
 import danger.service.dangerManage.DangerService;
-import danger.utils.ChangLiang;
 
-/**
- * 
- * @author 仙缘
- * @time 2017年9月9日上午10:55:58
- */
-// 现场处理实现类
+//现场处理实现类
 @Service
 public class SpotDisposeServiceImpl implements SpotDisposeService {
 	@Resource
@@ -47,10 +41,8 @@ public class SpotDisposeServiceImpl implements SpotDisposeService {
 			// 2、根据隐患编号修改隐患状态为已现场处理
 			Integer dangerId = spotDispose.getDangerid();
 
-			Danger danger = new Danger();
-			danger.setDangerid(dangerId);
-			danger.setDangerstatus(ChangLiang.yixianchangchuli);
 			// 封装条件
+			Danger danger = (Danger) dangerMapper.selectByPrimaryKey(dangerId);
 			// boolean result = false;
 			int result2 = dangerMapper.updateByPrimaryKeySelective(danger);
 			return result2 == 0 ? false : true;
@@ -68,7 +60,7 @@ public class SpotDisposeServiceImpl implements SpotDisposeService {
 
 	@Override
 	public boolean updateSpotDisposeById(Spotdispose spotDispose) throws Exception {
-		int result = spotdisposeMapper.updateByPrimaryKey(spotDispose);
+		int result = spotdisposeMapper.updateByPrimaryKeySelective(spotDispose);
 		return (result == 1 ? true : false);
 	}
 
@@ -97,6 +89,7 @@ public class SpotDisposeServiceImpl implements SpotDisposeService {
 	 *            隐患id
 	 * @return 现场处理的javabean
 	 */
+	@Override
 	public Spotdispose selectByDangerId(Integer dangerId) {
 		if (dangerId != null) {
 			SpotdisposeExample spotdisposeExample = new SpotdisposeExample();
@@ -114,7 +107,22 @@ public class SpotDisposeServiceImpl implements SpotDisposeService {
 		} else {
 			return null;
 		}
-
 	}
 
+	/**
+	 * 根据隐患id删除现场处理信息
+	 * @param dangerid 隐患id
+	 * @return 是否删除成功
+	 */
+	@Override
+	public boolean delSpotDisposeBydangerId(Integer dangerid){
+		//
+		SpotdisposeExample spotdisposeExample = new SpotdisposeExample();
+		SpotdisposeExample.Criteria criteria = spotdisposeExample.createCriteria();
+		//封装条件
+		criteria.andDangeridEqualTo(dangerid);
+		//删除现场处理信息
+		int result = spotdisposeMapper.deleteByExample(spotdisposeExample);
+		return result==0?false:true;
+	}
 }
