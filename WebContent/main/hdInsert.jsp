@@ -23,7 +23,216 @@
 <script type="text/javascript"
 	src="<%=path%>/controls/selectDropTree/jquery.ztree.excheck.js"></script>
 <script src="${pageContext.request.contextPath }/js/dateformat.js"></script>
+
+<!-- 初始化页面部分 start ------------------------------->
+<script type="text/javascript">
+//初始化责任单位   start====================================================start
+//初始化隐患级别 initDangerGrade
+//var zNodes2 = null;
+/* function zerendanwei(){
+	$.ajax({
+		url:'${pageContext.request.contextPath}/danger_initUnitData.action',
+		data:'',
+		type:'POST',
+		async:true,
+		dataType:'text',
+		success:function(data){
+			alert("jsonArray数组为空吗？"+data);
+			$("#unitShu").val(data);
+			alert("隐藏域现在有值吗？"+$("#unitShu").val());
+			zNodes2 = data;
+			alert("zNodes2的值"+zNodes2);
+		}
+	});
+}	 */
+//=============================初始化责任单位
+	//初始化班次
+	function banci(){
+		$.ajax({
+			url:'${pageContext.request.contextPath}/danger_initBanciData.action',
+			data:'',
+			type:'POST',
+			async:true,
+			dataType:'json',
+			success:function(data){
+				//alert("回掉函数")
+				for(var i=0;i<data.banci.length;i++){
+					//alert(data.banci[0])
+					//var optionStr = "<option value='"+(i+1)+"'>"+data.banci[i]+"</option>";
+					//alert(optionStr)
+					$("#className").append("<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>");			
+				}
+			}
+		});
+	 }
+	
+	//初始化检查单位 initcheckUnitData
+	function jianchadanwei(){
+		$.ajax({
+			url:'${pageContext.request.contextPath}/danger_initcheckUnitData.action',
+			data:'',
+			type:'POST',
+			async:true,
+			dataType:'json',
+			success:function(data){
+				//alert("回掉函数")
+				for(var i=0;i<data.banci.length;i++){
+					//alert(data.banci[0])
+					var optionStr = "<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>";
+					//alert(optionStr)
+					$("#fmchechunit").append("<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>");			
+				}
+			}
+		});
+	 }
+	
+	 //初始化隐患类型 initDangerType
+	 function yinhuanleixing(){
+		$.ajax({
+			url:'${pageContext.request.contextPath}/danger_initDangerType.action',
+			data:'',
+			type:'POST',
+			async:true,
+			dataType:'json',
+			success:function(data){
+				//alert("回掉函数")
+				for(var i=0;i<data.banci.length;i++){
+					//alert(data.banci[0])
+					var optionStr = "<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>";
+					//alert(optionStr)
+					$("#dangerType").append("<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>");			
+				}
+			}
+		});
+	  }
+	 
+	 //初始化隐患级别 initDangerGrade
+	 function yinhuanjibie(){
+		$.ajax({
+			url:'${pageContext.request.contextPath}/danger_initDangerGrade.action',
+			data:'',
+			type:'POST',
+			async:true,
+			dataType:'json',
+			success:function(data){
+				//alert("回掉函数")
+				for(var i=0;i<data.banci.length;i++){
+					//alert(data.banci[0])
+					var optionStr = "<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>";
+					//alert(optionStr)
+					$("#bankHigh").append("<option value='"+data.banci[i]+"'>"+data.banci[i]+"</option>");			
+				}
+			}
+		});
+	  }	 
+	 
+	 
+
+
+
+</script>
+
+<!-- 树放这里 -->
+<!-- 树 -->
+<script type="text/javascript">
+	$(document).ready(function() {
+		//初始化方法  start
+		alert("进入页面加载初始化");
+		banci();//初始化班次
+		jianchadanwei();//初始化检查单位
+		yinhuanleixing();//初始化隐患类型
+		yinhuanjibie();//初始化隐患级别
+		//zerendanwei();//初始化责任单位
+		alert("结束页面加载初始化");
+		
+		
+		//初始化方法  end
+		
+		searchUnitTree();
+		/**
+		 * 请求树信息
+		 */
+		function searchUnitTree() {
+			$.ajax({
+				type : "post",
+				target : "#treeDemo",
+				dataType : "json",
+				url : "searchTreeAction.action",
+				success : getTree,
+				error : function() {
+					alert("请求树失败！");
+				}
+			});
+		}
+
+		/**
+		 * 生成树
+		 */
+		var log, className = "dark";
+		function getTree(treeList2) {
+			var treeList3 = eval("(" + treeList2 + ")");
+			var setting = {
+				data : {
+					simpleData : {
+						enable : true,
+						idKey : "departmentId",
+						pIdKey : "upDepartmentId",
+						rootPId : "10",
+					},
+					key : {
+						name : "name",
+					}
+				},
+				callback : {
+					onClick : onClick
+				}
+			};
+			var zNodes = treeList3;
+			//添加 树节点的 点击事件；
+			
+			function onClick(event, treeId, treeNode, clickFlag) {
+				$("#unit").val(treeNode.name);
+				showLog3(treeNode.name);
+			}
+			$.fn.zTree.init($("#treeDemo2"), setting, zNodes);
+			var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+			treeObj.expandAll(false);
+		}
+
+		/* function onCheck(e, treeId, treeNode) {
+			alert("3")
+			$("#unit").val(treeNode.name);
+			showLog3(treeNode.name);
+		} */
+
+		function showLog3(str) {
+			if (!log)
+				log = $("#log");
+			/*清空内部的东西*/
+			if ($("#log > li").length > 0) {
+				$("#log").children("li").remove();
+			}
+			log.append("<li class='" + className + "'>" + str + "</li>");
+
+			/*判断是否插入进入，若插入进入，关闭树框*/
+			if ($("#log > li").length > 0) {
+				$("#treeDemo2").hide();
+			}
+		}
+		
+		$("#treeDemo2").hide();
+        $("#log").click(function () {
+            $('#treeDemo2').toggle();
+        })
+	});
+</script>
+
+<!-- ------- -->
+<!-- 初始化页面部分 end ---------------------------------->
 <!--责任单位-->
+
+
+<!-- 初始化 end------------------------ -->
 
 <!--编辑器-->
 <script charset="utf-8"
@@ -194,10 +403,10 @@
 									<span class="el_spans">班&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;次：</span>
 									<select id="className" class="selectpicker form-control"
 										name="danger.classtype" title="请选择">
-										<option value="">--请选择--</option>
-										<option value="甲班">甲班</option>
+									 	<option value="">--请选择--</option>
+										<!--<option value="甲班">甲班</option>
 										<option value="乙班">乙班</option>
-										<option value="丙班">丙班</option>
+										<option value="丙班">丙班</option> -->
 									</select>
 								</div>
 
@@ -212,7 +421,7 @@
 										class="selectpicker form-control" name="danger.checkunit"
 										id="fmchechunit" title="请选择">
 										<option value="">--请选择--</option>
-										<option value="安全小分组">安全小分组</option>
+										<!-- <option value="安全小分组">安全小分组</option>
 										<option value="矿领导">矿领导</option>
 										<option value="科领导">科领导</option>
 										<option value="屯兰安监处">屯兰安监处</option>
@@ -220,7 +429,7 @@
 										<option value="省厅">省厅</option>
 										<option value="山西焦煤">山西焦煤</option>
 										<option value="西山煤电">西山煤电</option>
-										<option value="西山煤电安监局">西山煤电安监局</option>
+										<option value="西山煤电安监局">西山煤电安监局</option> -->
 									</select>
 								</div>
 
@@ -242,13 +451,13 @@
 										class="selectpicker form-control" title="请选择"
 										name="danger.type">
 										<option value="">--请选择--</option>
-										<option value="采煤">采煤</option>
+										<!-- <option value="采煤">采煤</option>
 										<option value="开掘">开掘</option>
 										<option value="机电">机电</option>
 										<option value="运输">运输</option>
 										<option value="通风">通风</option>
 										<option value="地测">地测</option>
-										<option value="其他">其他</option>
+										<option value="其他">其他</option> -->
 									</select>
 								</div>
 
@@ -269,10 +478,10 @@
 										class="selectpicker form-control" title="请选择" id="bankHigh"
 										name="danger.dangergrade">
 										<option value="" id="option0">--请选择--</option>
-										<option value="无">无</option>
+										<!-- <option value="无">无</option>
 										<option value="C">C级</option>
 										<option value="B">B级</option>
-										<option value="A">A级</option>
+										<option value="A">A级</option> -->
 									</select>
 								</div>
 
@@ -567,89 +776,7 @@
 	<!--放脚-->
 	<jsp:include page="../public/footer.jsp"></jsp:include>
 </body>
+
+
 </html>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-
-		searchUnitTree();
-		/**
-		 * 请求树信息
-		 */
-		function searchUnitTree() {
-			$.ajax({
-				type : "post",
-				target : "#treeDemo",
-				dataType : "json",
-				url : "searchTreeAction.action",
-				success : getTree,
-				error : function() {
-					alert("请求树失败！");
-				}
-			});
-		}
-
-		/**
-		 * 生成树
-		 */
-		var log, className = "dark";
-		function getTree(treeList2) {
-			var treeList3 = eval("(" + treeList2 + ")");
-			var setting = {
-				data : {
-					simpleData : {
-						enable : true,
-						idKey : "departmentId",
-						pIdKey : "upDepartmentId",
-						rootPId : "10",
-					},
-					key : {
-						name : "name",
-					}
-				},
-				callback : {
-					onClick : onClick
-				}
-			};
-			var zNodes = treeList3;
-			//添加 树节点的 点击事件；
-			
-			function onClick(event, treeId, treeNode, clickFlag) {
-				$("#unit").val(treeNode.name);
-				showLog3(treeNode.name);
-			}
-			$.fn.zTree.init($("#treeDemo2"), setting, zNodes);
-			var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
-			treeObj.expandAll(false);
-			
-			 
-			
-		}
-
-		/* function onCheck(e, treeId, treeNode) {
-			alert("3")
-			$("#unit").val(treeNode.name);
-			showLog3(treeNode.name);
-		} */
-
-		function showLog3(str) {
-			if (!log)
-				log = $("#log");
-			/*清空内部的东西*/
-			if ($("#log > li").length > 0) {
-				$("#log").children("li").remove();
-			}
-			log.append("<li class='" + className + "'>" + str + "</li>");
-
-			/*判断是否插入进入，若插入进入，关闭树框*/
-			if ($("#log > li").length > 0) {
-				$("#treeDemo2").hide();
-			}
-		}
-		
-		$("#treeDemo2").hide();
-        $("#log").click(function () {
-            $('#treeDemo2').toggle();
-        })
-	});
-</script>

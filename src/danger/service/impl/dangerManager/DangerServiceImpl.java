@@ -196,24 +196,31 @@ public class DangerServiceImpl implements DangerService {
 	 * public ArrayList getClassType()throws Exception{ return
 	 * dangerCustomMapper.findClassType(); }
 	 */
-
+	@Override
 	public List findAllDangerclassType() throws Exception {
 		List<Danger> list = dangerCustomMapper.findAllDangerclassType();
 		return list;
 	}
-
+	@Override
 	public List findAllDangercheckUnit() throws Exception {
 		List<Danger> list = dangerCustomMapper.findAllDangercheckUnit();
 		return list;
 	}
-
+	@Override
 	public List findAllDangertype() throws Exception {
 		List<Danger> list = dangerCustomMapper.findAllDangertype();
 		return list;
 	}
-
+	@Override
 	public List findAllDangerunit() throws Exception {
 		List<Danger> list = dangerCustomMapper.findAllDangerunit();
 		return list;
 	}
+	
+	//==============初始化下拉菜单=start
+	
+	
+	
+	//===========初始化下拉菜单= end
+
 }
